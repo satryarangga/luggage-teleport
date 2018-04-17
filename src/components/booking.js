@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, FormControl, ControlLabel, Grid, Row, Col } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel, Grid, Row, Col, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { bindActionCreators } from 'redux';
@@ -10,7 +10,10 @@ class Booking extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { goConfirm: false }
+		this.state = { 
+			goConfirm: false,
+			validationError: false
+		}
 	}
 
   	renderTextField(field) {
@@ -32,9 +35,20 @@ class Booking extends Component {
 		);
 	}
 
+	showValidationError() {
+		if(this.state.validationError) {
+			return (
+				<Alert bsStyle="danger">
+				  <strong>Attention!</strong> Please input all fields.
+				</Alert>
+			)
+		}
+		return;
+	}
+
 	onSubmitReservation(values) {
 		if(!values.roomNumber || !values.participant || !values.companyName) {
-			console.log('ler');
+			this.setState({ validationError : true})
 			return false;
 		}
 		this.props.createBooking(values);
@@ -52,6 +66,7 @@ class Booking extends Component {
 			  <Col md={6} mdOffset={3}>
 				  <Row className="show-grid">
 				  	<h3 className="text-center">Meeting Room Booking</h3>
+				  	{this.showValidationError()}
 				  </Row>
 			      <form onSubmit={handleSubmit(this.onSubmitReservation.bind(this))}>
 			      	<Field
