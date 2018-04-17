@@ -2,11 +2,11 @@ export const loadState = () => {
 	try {
 		const bookingData = localStorage.getItem('booking');
 		if(bookingData === null) {
-			return undefined;
+			return {};
 		}
 		return JSON.parse(bookingData);
 	} catch (err) {
-		return undefined;
+		return {};
 	}
 }
 
