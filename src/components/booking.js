@@ -3,7 +3,7 @@ import { FormGroup, FormControl, ControlLabel, Grid, Row, Col, Alert } from 'rea
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { bindActionCreators } from 'redux';
-import { createBooking } from '../actions/actionBooking';
+import { createBooking, fetchBooking } from '../actions/actionBooking';
 import { Redirect } from 'react-router-dom'
 
 class Booking extends Component {
@@ -14,6 +14,10 @@ class Booking extends Component {
 			goConfirm: false,
 			validationError: false
 		}
+	}
+
+	componentDidMount() {
+		this.props.fetchBooking();
 	}
 
   	renderTextField(field) {
@@ -99,15 +103,19 @@ class Booking extends Component {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({ createBooking }, dispatch);
+  return bindActionCreators({ createBooking, fetchBooking }, dispatch);
 }
 
-function mapStateToProps (state) {
-  return { booking: state.booking }
-}
+Booking = reduxForm({
+  form: 'booking'
+})(Booking);
 
-export default reduxForm({
-  form: 'Booking'
-}) (
-    connect(mapStateToProps, mapDispatchToProps) (Booking)
-);
+Booking = connect(
+  state => ({
+    initialValues: state.booking
+  }),
+  mapDispatchToProps
+)(Booking);
+
+
+export default Booking;
